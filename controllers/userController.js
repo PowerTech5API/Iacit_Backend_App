@@ -1,4 +1,5 @@
 const { User: UserModel } = require("../models/User");
+const bcrypt = require('bcrypt');
 
 const userController = {
 
@@ -34,10 +35,13 @@ const userController = {
 
     create: async (req, res) => {
         try {
+
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(req.body.password, salt);
             const user = {
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
+                password: passwordHash,
                 isAdmin: req.body.isAdmin,
                 isSendEmail: true
             }
