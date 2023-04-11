@@ -25,18 +25,18 @@ const roController = {
             ros.nomeresponsavel =  req.body.nomeresponsavel;
             ros.nomeColaborador =  req.body.nomeColaborador;
             ros.defeito =  req.body.defeito;
-            ros.hardware= {
-                equipamento : req.body.hardware.equipamento,
-                posicao : req.body.hardware.posicao,
-                partnumber : req.body.hardware.partnumber,
-                serialNumber :  req.body.hardware.serialNumber, 
-            }
-            ros.software={
-                versaoBD :req.body.software.versaoBD,
-                versaoSoftware :req.body.software.versaoSoftware,
-                LogsRO :req.body.software.LogsRO,
+            // ros.hardware= {
+            //     equipamento : req.body.hardware.equipamento,
+            //     posicao : req.body.hardware.posicao,
+            //     partnumber : req.body.hardware.partnumber,
+            //     serialNumber :  req.body.hardware.serialNumber, 
+            // }
+            // ros.software={
+            //     versaoBD :req.body.software.versaoBD,
+            //     versaoSoftware :req.body.software.versaoSoftware,
+            //     LogsRO :req.body.software.LogsRO,
 
-            }
+            // }
             ros.titulo =  req.body.titulo
             ros.descricao =  req.body.descricao
             ros.resolucao =  req.body.resolucao
@@ -45,7 +45,7 @@ const roController = {
 
             const response = await RoModel.create(ros);
             res.json(ros);
-            console.log("errasdasdasdasdor");
+            console.log("RO cadastrado com sucesso");
 
             
 
@@ -122,7 +122,7 @@ const roController = {
                 categoria : req.body.categoria,
             };
 
-            console.log(ros)
+            console.log("RO alterado com sucesso")
             const response = await RoModel.findByIdAndUpdate(filter,update);
             res.json(ros);
 
@@ -150,11 +150,11 @@ const roController = {
             const id = req.params.id;
             const ro = await RoModel.findById(id); 
             if (!ro) {
-                res.status(404).json({ msg: "Usuário não encontrado" })
+                res.status(404).json({ msg: "RO não encontrado" })
             }
 
             const ros = await RoModel.findOneAndDelete(id); 
-            res.status(200).json({ msg: "Usuário deletado com sucesso" })
+            res.status(200).json({ msg: "RO deletado com sucesso" })
 
 
         }

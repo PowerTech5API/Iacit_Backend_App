@@ -2,35 +2,35 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RosSchema = new Schema({
-    orgao :  String ,
-    dataRegistro :  String ,
-    horaRegistro :  String ,
-    nomeRelator :  String ,
-    nomeresponsavel :  String ,
-    nomeColaborador :  String ,
-    defeito :  String ,
-    hardware :{
-        equipamento :  String ,
-        posicao :  String ,
-        partnumber :  String ,
-        serialNumber :  String ,	
-       },
-    software :{
-        versaoBD :  String ,
-        versaoSoftware :  String ,
-        LogsRO :  String 
-       },
+    orgao :  { type: String, required: false} , 
+    dataRegistro :  { type: String, required: false} ,
+    horaRegistro :  { type: String, required: false} , 
+    nomeRelator :  { type: String, required: false} ,
+    nomeresponsavel :  { type: String, required: false} ,
+    nomeColaborador :  { type: String, required: false} , 
+    defeito :  { type: String, required: false} , 
+    // hardware :{
+    //     equipamento :  { type: String, required: false} , 
+    //     posicao :  { type: String, required: false} , 
+    //     partnumber :  { type: String, required: false} , 
+    //     serialNumber :  { type: String, required: false} , 
+    //    },
+    // software : {
+    //     versaoBD :  { type: String, required: false} ,
+    //     versaoSoftware :  { type: String, required: false} , 
+    //     LogsRO :  { type: String, required: false}, 
+    //    },
    
-    titulo :  String ,
-    descricao :  String ,
-    resolucao :  String ,
+    titulo :  { type: String, required: false} , 
+    descricao :  { type: String, required: false} , 
+    resolucao :  { type: String, required: false} ,   
        
    
    
    
    
-    status :  String ,
-    categoria :  String ,
+    status :  { type: String, required: false} ,
+    categoria :  { type: String, required: false} ,
     
    
      
