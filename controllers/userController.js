@@ -44,7 +44,6 @@ const userController = {
 
             const filter = { email: user.email };
             const existingEmail = await UserModel.findOne(filter);
-            console.log(existingEmail)
             if (existingEmail) {
                 res.status(404).json({ msg: "Esse e-mail já é utilizado!" });
             }
