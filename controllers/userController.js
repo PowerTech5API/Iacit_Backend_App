@@ -127,6 +127,28 @@ const userController = {
         }
 
         res.send("Login OK!");
+    },
+    getByEmail: async (req, res) => {
+        try {
+            
+
+            const email = req.params.email;
+            const user = await UserModel.find({ email:email }); 
+
+            // tratando erro para caso não encontre o id
+            if (!user) {
+                res.status(404).json({ msg: "Usuário não encontrado" })
+            }
+
+
+            res.json(user)
+
+        
+
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 
 }

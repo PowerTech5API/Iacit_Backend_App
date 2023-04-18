@@ -1,0 +1,73 @@
+[33mcommit 1493cb27441c9293a310e3643a558c16d1e06900[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 809d3e5 4d99708
+Author: Frederico Rabelo <45391790+fredrbo@users.noreply.github.com>
+Date:   Fri Mar 31 08:40:10 2023 -0300
+
+    Merge pull request #2 from PowerTech5API/task_ro
+    
+    Atualizando main com ROs
+
+[33mcommit 4d99708950435cf3e9d0ca31b56c3b3dde8cac97[m[33m ([m[1;31morigin/task_ro[m[33m)[m
+Merge: 5d4c894 809d3e5
+Author: Frederico Rabelo <45391790+fredrbo@users.noreply.github.com>
+Date:   Fri Mar 31 08:38:48 2023 -0300
+
+    Merge pull request #1 from PowerTech5API/main
+    
+    Implementando ROs
+
+[33mcommit 5d4c894f7b580268276b0b4e944dfd4413b945ac[m[33m ([m[1;31morigin2/task_ro[m[33m, [m[1;32mtask_ro[m[33m)[m
+Author: LuccaSantiagoDev <luccasantdev@gmail.com>
+Date:   Thu Mar 30 12:10:16 2023 -0300
+
+    feito a tesc RO
+
+ controllers/roController.js | 184 [32m++++++++++++++++++++++++++++++++++++++++++++[m
+ models/Ro.js                |  44 [32m+++++++++++[m
+ routes/ro.js                |  12 [32m+++[m
+ routes/router.js            |   2 [32m+[m
+ 4 files changed, 242 insertions(+)
+
+[33mcommit 809d3e5fe2a23a68d7c6907f7c82c0bfe670d0c3[m
+Author: Frederico Rabelo <frederico.rabelo@triasoftware.com>
+Date:   Thu Mar 30 11:32:47 2023 -0300
+
+    "tratando erro email repetido"
+
+ controllers/userController.js | 7 [32m+++[m[31m----[m
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+[33mcommit a21995baacb9db34a00123e00f46959cb9d5d1fe[m
+Author: Frederico Rabelo <frederico.rabelo@triasoftware.com>
+Date:   Thu Mar 30 11:30:10 2023 -0300
+
+    tratando erro email repetido
+
+ controllers/userController.js | 11 [32m+++++++++[m[31m--[m
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+[33mcommit 49083d2441977edc82a06869036738856559eb36[m
+Author: Frederico Rabelo <frederico.rabelo@triasoftware.com>
+Date:   Tue Mar 28 11:17:50 2023 -0300
+
+    Iniciando projeto
+
+ .gitignore                    |  144 [32m+++[m
+ app.js                        |   22 [32m+[m
+ controllers/userController.js |  103 [32m++[m
+ db/conn.js                    |   14 [32m+[m
+ models/User.js                |   18 [32m+[m
+ package-lock.json             | 2121 [32m+++++++++++++++++++++++++++++++++++++++++[m
+ package.json                  |   21 [32m+[m
+ routes/router.js              |    7 [32m+[m
+ routes/user.js                |   11 [32m+[m
+ 9 files changed, 2461 insertions(+)
+
+[33mcommit 2d1a802ce83133dd8a40581693c8f6d2f82f4e88[m
+Author: Frederico Rabelo <45391790+fredrbo@users.noreply.github.com>
+Date:   Tue Mar 28 11:09:50 2023 -0300
+
+    Initial commit
+
+ README.md | 1 [32m+[m
+ 1 file changed, 1 insertion(+)

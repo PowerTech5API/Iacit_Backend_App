@@ -8,5 +8,6 @@ router.route("/user").post((req, res) => userController.create(req, res));
 router.route("/user").put((req, res) => userController.update(req, res));
 router.route("/user/:id").delete((req, res) => userController.delete(req, res));
 router.route("/user/login").post((req, res) => userController.login(req, res));
+router.route("/user/getByEmail/:email").get((req, res) => userController.getByEmail(req, res));
 
 module.exports = router;
