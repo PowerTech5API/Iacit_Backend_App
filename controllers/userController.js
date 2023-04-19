@@ -1,8 +1,7 @@
 const { User: UserModel } = require("../models/User");
+const bcrypt = require('bcrypt');
 
 const userController = {
-
-
 
     getAll: async (req, res) => {
         try {
@@ -101,6 +100,23 @@ const userController = {
         catch (error) {
             console.log(error)
         }
+    },
+
+    login: async (req, res) => {
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({ email: email })
+
+        if (!user) {
+            return res.status(404).send({ message: "Usuário não existe" })
+        }
+
+        passwordIsValid = bcrypt.compareSync(password, user.password)
+
+        if (!passwordIsValid) {
+            return res.status(400).send({ message: "Senha inválida" })
+        }
+
+        res.send(user);
     }
 
 }
