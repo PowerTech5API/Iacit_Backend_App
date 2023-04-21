@@ -42,7 +42,7 @@ const roController = {
             ros.resolucao =  req.body.resolucao
             ros.status =  req.body.status
             ros.categoria =  req.body.categoria
-
+            ros.user = req.body.user
             const response = await RoModel.create(ros);
             res.json(ros);
             console.log("errasdasdasdasdor");
