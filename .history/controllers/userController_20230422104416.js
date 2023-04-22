@@ -10,7 +10,8 @@ const userController = {
 
     getAll: async (req, res) => {
         try {
-            const users = await UserModel.find({}, { password: 0 }); // não exibe a senha
+            const users = await UserModel.find({})
+                // { password: 0 }; // não exibe a senha
 
             res.json(users);
         }

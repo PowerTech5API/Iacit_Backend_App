@@ -120,10 +120,10 @@ const userController = {
         if (!passwordIsValid) {
             return res.status(400).send({ message: "Senha inválida" })
         }
-        const token = generateToken(user.id)
-        res.send(token);
+
+        res.send(user);
     }
-        
+
 }
 
 module.exports = userController;

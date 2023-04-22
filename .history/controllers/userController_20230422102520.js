@@ -1,10 +1,8 @@
 const { User: UserModel } = require("../models/User");
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
-require("dotenv").config()
 
 const loginService = (email) => UserModel.findOne({email: email}).select("+password");
-const generateToken = (id) => jwt.sign({id: id}, process.env.SECRET_JWT, {expiresIn: 86400})
+
 
 const userController = {
 
@@ -120,10 +118,10 @@ const userController = {
         if (!passwordIsValid) {
             return res.status(400).send({ message: "Senha inválida" })
         }
-        const token = generateToken(user.id)
-        res.send(token);
+
+        res.send(user);
     }
-        
+
 }
 
 module.exports = userController;
