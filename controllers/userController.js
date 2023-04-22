@@ -1,6 +1,9 @@
 const { User: UserModel } = require("../models/User");
 const bcrypt = require('bcrypt');
 
+const loginService = (email) => UserModel.findOne({email: email}).select("+password");
+
+
 const userController = {
 
     getAll: async (req, res) => {
@@ -104,7 +107,7 @@ const userController = {
 
     login: async (req, res) => {
         const { email, password } = req.body;
-        const user = await UserModel.findOne({ email: email })
+        const user = await loginService(email);
 
         if (!user) {
             return res.status(404).send({ message: "Usuário não existe" })
