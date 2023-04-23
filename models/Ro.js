@@ -24,14 +24,13 @@ var RosSchema = new Schema({
     titulo :  String ,
     descricao :  String ,
     resolucao :  String ,
-       
-   
-   
-   
-   
     status :  String ,
     categoria :  String ,
     
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
    
      
 } ,{timestamps:true}

@@ -1,17 +1,14 @@
 const { User: UserModel } = require("../models/User");
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
-require("dotenv").config()
-const SECRET_JWT = "c3de4279e9e95ab27ad171cd046b8127"
 
 const loginService = (email) => UserModel.findOne({email: email}).select("+password");
-const generateToken = (id) => jwt.sign({id: id}, SECRET_JWT, {expiresIn: 86400})
+
 
 const userController = {
 
     getAll: async (req, res) => {
         try {
-            const users = await UserModel.find({}); // não exibe a senha
+            const users = await UserModel.find({}, { password: 0 }); // não exibe a senha
 
             res.json(users);
         }
@@ -121,10 +118,10 @@ const userController = {
         if (!passwordIsValid) {
             return res.status(400).send({ message: "Senha inválida" })
         }
-        const token = generateToken(user.id)
-        res.send(token);
+
+        res.send(user);
     }
-        
+
 }
 
 module.exports = userController;

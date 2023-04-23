@@ -42,7 +42,7 @@ const roController = {
             ros.resolucao =  req.body.resolucao
             ros.status =  req.body.status
             ros.categoria =  req.body.categoria
-
+            ros.user = req.body.user
             const response = await RoModel.create(ros);
             res.json(ros);
             console.log("errasdasdasdasdor");
@@ -91,7 +91,7 @@ const roController = {
             ros.categoria =  req.body.categoria
 
             if (!ros._id) {
-                res.status(400).json({ msg: "Informe o id do usuário!" })
+                res.status(400).json({ msg: "Informe o id da RO!" })
             }
 
             const filter = { _id: req.body._id};
@@ -150,11 +150,11 @@ const roController = {
             const id = req.params.id;
             const ro = await RoModel.findById(id); 
             if (!ro) {
-                res.status(404).json({ msg: "Usuário não encontrado" })
+                res.status(404).json({ msg: "RO não encontrada" })
             }
 
             const ros = await RoModel.findOneAndDelete(id); 
-            res.status(200).json({ msg: "Usuário deletado com sucesso" })
+            res.status(200).json({ msg: "RO deletada com sucesso" })
 
 
         }
