@@ -1,5 +1,5 @@
 const { Config: ConfigModel } = require("../models/Config");
-const { termsController } = require('../models/Terms');
+const { termsController } = require('../models/terms');
 
 const moment = require('moment');
 
