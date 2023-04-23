@@ -1,5 +1,9 @@
-
 const { Ros: RoModel } = require("../models/Ro");
+const userController = require("../controllers/userController");
+
+
+const jwt = require('jsonwebtoken')
+require("dotenv").config()
 
 const roController = {
 
@@ -14,8 +18,40 @@ const roController = {
         }
     
     },
-    create :async (req, res) => {
-        try{
+    create :async (req, res) => {        
+        try{ 
+
+            try {
+                const {authorization} = req.headers;
+
+                if(!authorization){
+                    return res.send(401);
+                }
+
+                const parts = authorization.split(" ");
+
+                if (parts.length !== 2){
+                    return res.send(401);
+                }
+
+                const [schema, token] = parts;
+
+                if(schema !== "Bearer"){
+                    return res.send(401)
+                }
+
+                jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+                    if (error){
+                        return res.status(401).send({message: "Token Inválido"});
+                    } 
+
+                    req.userId = decoded.id;
+                });                
+
+            } catch (err){
+                res.status(500).send(err.message);
+            }
+
             var ros = new RoModel();
            
             ros.orgao = req.body.orgao;
@@ -42,13 +78,10 @@ const roController = {
             ros.resolucao =  req.body.resolucao
             ros.status =  req.body.status
             ros.categoria =  req.body.categoria
-            ros.user = req.body.user
+            ros.user = req.userId
             const response = await RoModel.create(ros);
             res.json(ros);
-            console.log("errasdasdasdasdor");
-
-            
-
+            console.log("RO criado com sucesso!");          
     }
 
     
