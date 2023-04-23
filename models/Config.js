@@ -1,14 +1,27 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const ConfigSchema = new mongoose.Schema({
-  idUser: [{
+const ConfigSchema = new Schema({
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  isSendEmail: { type: Boolean },
-  history: {
-    day: Date,
-    versionTerm: String
+    ref: 'User',
+    required: true
+  },
+  termsAccepted: {
+    type: Boolean,
+    required: true
+  },
+  termsVersion: {
+    type: String,
+    required: true
+  },
+  acceptedAt: {
+    type: Date,
+    required: true
+  },
+  receiveEmails: {
+    type: Boolean,
+    default: false
   }
 
 });
