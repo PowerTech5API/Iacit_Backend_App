@@ -8,6 +8,5 @@ router.route("/ro/update").put((req, res) => roController.update(req, res));
 router.route("/ro/getById/:id").get((req, res) => roController.getById(req, res));
 router.route("/ro/delete/:id").delete((req, res) => roController.delete(req, res));
 router.route("/ro/status/:status").get((req, res) => roController.getByStatus(req, res));
-router.route("/ro/userStatus/:status").get((req, res) => roController.getByUserStatus(req, res));
 
 module.exports = router;
