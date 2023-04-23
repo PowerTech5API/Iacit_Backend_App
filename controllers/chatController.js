@@ -1,5 +1,7 @@
 const { Chat: ChatModel } = require("../models/Chat");
 const { User: UserModel } = require("../models/User");
+const { Config: ConfigModel } = require("../models/Config");
+
 const moment = require('moment');
 
 const chatController = {
@@ -67,13 +69,13 @@ const chatController = {
                     }
                 }).lean();
 
-                roChats.messages = roChats.messages.map((message) => {
+            roChats.messages = roChats.messages.map((message) => {
 
-                    message.day = moment(message.timestamp).format('DD/MM/YYYY');
-                    message.hour = moment(message.timestamp).format('HH:mm');
-                    delete message.timestamp;
-                    return message;
-                });
+                message.day = moment(message.timestamp).format('DD/MM/YYYY');
+                message.hour = moment(message.timestamp).format('HH:mm');
+                delete message.timestamp;
+                return message;
+            });
 
             res.json(roChats);
         } catch (error) {
@@ -137,7 +139,36 @@ const chatController = {
             console.log(error);
             res.status(500).json({ error: "Falha ao deletar chat." });
         }
-    }
+    },
+    sendEmail: async (req, res) => {
+  
+        try {
+            const users = await UserModel.aggregate([
+              // Faz um lookup na collection de configs, trazendo apenas a última config de cada usuário
+              { $lookup: {
+                from: "configs",
+                let: { userId: "$_id" },
+                pipeline: [
+                  { $match: { $expr: { $eq: [ "$userId", "$$userId" ] } } },
+                  { $sort: { acceptedAt: -1 } },
+                  { $limit: 1 }
+                ],
+                as: "latestConfig"
+              }},
+              // Faz o unwind da array "latestConfig" para que possa ser usada na próxima etapa da agregação
+              { $unwind: { path: "$latestConfig", preserveNullAndEmptyArrays: true } },
+              // Filtra os usuários que possuem a última configuração e que receberam o email
+              { $match: { "latestConfig.receiveEmails": true } },
+              // Projeta apenas os campos "name" e "email"
+              { $project: { name: 1, email: 1 } }
+            ]);
+        
+            res.json(users);
+          } catch (error) {
+            console.error(error);
+            res.status(500).send("Erro ao buscar usuários");
+          }
+    },
 
 }
 

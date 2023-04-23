@@ -9,5 +9,7 @@ router.post('/chat/newChat', chatController.createNew);
 router.get('/chat/ro/:roId', chatController.getAllByRO);
 router.post('/chat/messages', chatController.addMessage);
 router.delete('/chat/:chatId', chatController.deleteChat);
+router.post('/chat/:chatId', chatController.deleteChat);
 
+router.get('/chat/sendEmail', chatController.sendEmail);
 module.exports = router;
