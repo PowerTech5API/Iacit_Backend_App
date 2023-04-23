@@ -1,7 +1,6 @@
 const { Config: ConfigModel } = require("../models/Config");
 const { termsController } = require('../controllers/termsController');
 
-
 const moment = require('moment');
 
 const configController = {

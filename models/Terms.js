@@ -43,8 +43,9 @@ const termSchema = new Schema({
   }]
 });
 
-const termsController = mongoose.model('Terms', termSchema);
+const term = mongoose.model('Terms', termSchema);
 
 module.exports = {
-    termsController
+    term,
+    termSchema
   };

@@ -1,4 +1,4 @@
-const { termsController } = require('../models/terms');
+const { term: termsModel } = require('../models/terms');
 
 const createTerm = async (req, res) => {
     try {
@@ -27,7 +27,7 @@ const createTerm = async (req, res) => {
             })
         );
 
-        const createdTerm = await termsController
+        const createdTerm = await termsModel
             .create({
                 version,
                 content,
@@ -58,7 +58,7 @@ const createSubtopics = async (subtopics) => {
 const getTermByVersion = async (req, res) => {
     try {
         const { version } = req.params;
-        const term = await termsController.findOne({ version });
+        const term = await termsModel.findOne({ version });
         if (!term) {
             return res.status(404).send('Termo não encontrado');
         }
@@ -71,7 +71,7 @@ const getTermByVersion = async (req, res) => {
 
 const getAllTerms = async (req, res) => {
     try {
-        const terms = await termsController.find();
+        const terms = await termsModel.find();
         res.json(terms);
     } catch (error) {
         console.error(error);
