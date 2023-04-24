@@ -211,7 +211,57 @@ const roController = {
         catch (error) {
             console.log(error)
         }
+    },
+
+    getByUserStatus :async (req, res) => {
+        try {
+            try {
+                const {authorization} = req.headers;
+
+                if(!authorization){
+                    return res.send(401);
+                }
+
+                const parts = authorization.split(" ");
+
+                if (parts.length !== 2){
+                    return res.send(401);
+                }
+
+                const [schema, token] = parts;
+
+                if(schema !== "Bearer"){
+                    return res.send(401)
+                }
+
+                jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+                    if (error){
+                        return res.status(401).send({message: "Token Inválido"});
+                    } 
+
+                    req.userId = decoded.id;
+                });                
+
+            } catch (err){
+                res.status(500).send(err.message);
+            }
+
+            const status = req.params.status;
+            const user = req.userId;
+            const ros = await RoModel.find({ status: status, user: user }); 
+            console.log(ros)
+            if (!ros){
+
+                res.json("vazio")
+
+            }
+            res.json(ros)
+
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
     
 }
-    module.exports = roController;
+module.exports = roController;
