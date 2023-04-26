@@ -9,13 +9,24 @@ const configController = {
         try {
             const lastTerm = await termsController.findOne({}, { version: 1 }).sort({ version: -1 });
 
-            const config = new ConfigModel({
-                userId: req.body.userId,
-                termsAccepted: req.body.termsAccepted,
-                termsVersion: lastTerm.version,
-                acceptedAt: moment().toDate(),
-                receiveEmails: req.body.receiveEmails
-            });
+            let config;
+            if (req.body.termsAccepted) {
+                config = new ConfigModel({
+                    userId: req.body.userId,
+                    termsAccepted: req.body.termsAccepted,
+                    termsVersion: lastTerm.version,
+                    acceptedAt: moment().toDate(),
+                    receiveEmails: req.body.receiveEmails
+                });
+            } else {
+                config = new ConfigModel({
+                    userId: req.body.userId,
+                    termsAccepted: req.body.termsAccepted,
+                    termsVersion: lastTerm.version,
+                    acceptedAt: moment().toDate(),
+                    receiveEmails: false
+                });
+            }
 
             await config.save();
 
