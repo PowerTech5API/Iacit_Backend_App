@@ -1,4 +1,7 @@
 const { termsController } = require('../models/terms');
+const { Config: ConfigModel } = require("../models/Config");
+const { User: UserModel } = require("../models/User");
+const moment = require('moment');
 
 const createTerm = async (req, res) => {
     try {
@@ -25,6 +28,8 @@ const createTerm = async (req, res) => {
 
                 return createdTopic;
             })
+            // Define as configurações dos usuários como false
+
         );
 
         const createdTerm = await termsController
@@ -34,7 +39,9 @@ const createTerm = async (req, res) => {
                 topics: createdTopics,
             });
 
+        await resetConfigurations();
         res.status(201).json(createdTerm);
+        // feito isso é preciso pegar chamar a função de criar config, para registrar as alteaçõres
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating term', error });
@@ -79,6 +86,27 @@ const getAllTerms = async (req, res) => {
     }
 }
 
+const resetConfigurations = async (req, res) => {
+    try {
+      const users = await UserModel.find({});
+      const createdConfigs = await Promise.all(
+        users.map(async (user) => {
+          const lastTerm = await termsController.findOne({}, { version: 1 }).sort({ version: -1 });
+          const config = new ConfigModel({
+            userId: user._id,
+            termsAccepted: false,
+            termsVersion: lastTerm.version,
+            acceptedAt: moment().toDate(),
+            receiveEmails: false,
+          });
+          return config.save();
+        })
+      );
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Erro ao resetar', error });
+    }
+  };
 
 
 module.exports = {
