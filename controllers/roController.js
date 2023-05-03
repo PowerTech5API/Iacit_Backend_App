@@ -261,7 +261,35 @@ const roController = {
         catch (error) {
             console.log(error)
         }
-    }
+    },
+
+    getOrgaos: async (req, res) => {
+        try {
+            const orgaos = await RoModel.distinct("orgao");
+            const listOrgaos = []
+            orgaos.forEach(element => {
+                listOrgaos.push({nome: element})
+            });
+            res.json(listOrgaos);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    
+    getOrgaos: async (req, res) => {
+        try {
+            const orgaos = await RoModel.distinct("orgao");
+            const listOrgaos = []
+            orgaos.forEach(element => {
+                listOrgaos.push({nome: element})
+            });
+            res.json(listOrgaos);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    
     
 }
 module.exports = roController;
