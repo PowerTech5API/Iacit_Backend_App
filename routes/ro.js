@@ -9,5 +9,7 @@ router.route("/ro/getById/:id").get((req, res) => roController.getById(req, res)
 router.route("/ro/delete/:id").delete((req, res) => roController.delete(req, res));
 router.route("/ro/status/:status").get((req, res) => roController.getByStatus(req, res));
 router.route("/ro/userStatus/:status").get((req, res) => roController.getByUserStatus(req, res));
+router.route("/ro/getOrgaos").get((req, res) => roController.getOrgaos(req, res));
+router.route("/ro/filterRo").post((req, res) => roController.filterRos(req, res));
 
 module.exports = router;
