@@ -1,4 +1,4 @@
-const { termsController } = require('../models/Terms');
+const { Terms: TermsModel  } = require('../models/Terms');
 const { Config: ConfigModel } = require("../models/Config");
 const { User: UserModel } = require("../models/User");
 const moment = require('moment');
@@ -32,7 +32,7 @@ const createTerm = async (req, res) => {
 
         );
 
-        const createdTerm = await termsController
+        const createdTerm = await TermsModel
             .create({
                 version,
                 content,
@@ -65,7 +65,7 @@ const createSubtopics = async (subtopics) => {
 const getTermByVersion = async (req, res) => {
     try {
         const { version } = req.params;
-        const term = await termsController.findOne({ version });
+        const term = await TermsModel.findOne({ version });
         if (!term) {
             return res.status(404).send('Termo não encontrado');
         }
@@ -78,7 +78,7 @@ const getTermByVersion = async (req, res) => {
 
 const getAllTerms = async (req, res) => {
     try {
-        const terms = await termsController.find();
+        const terms = await TermsModel.find();
         res.json(terms);
     } catch (error) {
         console.error(error);
@@ -91,7 +91,7 @@ const resetConfigurations = async (req, res) => {
       const users = await UserModel.find({});
       const createdConfigs = await Promise.all(
         users.map(async (user) => {
-          const lastTerm = await termsController.findOne({}, { version: 1 }).sort({ version: -1 });
+          const lastTerm = await TermsModel.findOne({}, { version: 1 }).sort({ version: -1 });
           const config = new ConfigModel({
             userId: user._id,
             termsAccepted: false,
