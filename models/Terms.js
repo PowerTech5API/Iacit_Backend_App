@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const termSchema = new Schema({
+const TermSchema = new Schema({
   version: {
     type: String,
     required: true,
@@ -43,8 +43,9 @@ const termSchema = new Schema({
   }]
 });
 
-const termsController = mongoose.model('Terms', termSchema);
+const Terms = mongoose.model('Terms', TermSchema);
 
 module.exports = {
-    termsController
+    Terms,
+    TermSchema
   };
