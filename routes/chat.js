@@ -10,5 +10,6 @@ router.get('/chat/ro/:roId', chatController.getAllByRO);
 router.post('/chat/messages', chatController.addMessage);
 router.delete('/chat/:chatId', chatController.deleteChat);
 router.post('/chat/:chatId', chatController.deleteChat);
+router.get('/config/sendEmail', chatController.sendEmail);
 
 module.exports = router;
