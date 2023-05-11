@@ -1,4 +1,4 @@
-const { termsController } = require('../models/terms');
+const { termsController } = require('../models/Terms');
 const { Config: ConfigModel } = require("../models/Config");
 const { User: UserModel } = require("../models/User");
 const moment = require('moment');
