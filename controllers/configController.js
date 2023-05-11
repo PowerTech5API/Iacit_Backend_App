@@ -1,5 +1,5 @@
 const { Config: ConfigModel } = require("../models/Config");
-const { termsController } = require('../models/terms');
+const { Terms: termsModel } = require('../models/terms');
 
 const moment = require('moment');
 
@@ -7,7 +7,7 @@ const configController = {
 
     saveConfig: async (req, res) => {
         try {
-            const lastTerm = await termsController.findOne({}, { version: 1 }).sort({ version: -1 });
+            const lastTerm = await termsModel.findOne({}, { version: 1 }).sort({ version: -1 });
 
             let config;
             if (req.body.termsAccepted) {
