@@ -1,6 +1,8 @@
 const { User: UserModel } = require("../models/User");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose');
+
 require("dotenv").config()
 
 const loginService = (email) => UserModel.findOne({email: email}).select("+password");
@@ -88,10 +90,43 @@ const userController = {
 
 
     delete: async (req, res) => {
+
+
+        const mongoDB2URI = 'mongodb+srv://lucca:11@cluster0.tr11zxk.mongodb.net/lgpd?retryWrites=true&w=majority';
+
+        // create a new MongoDB connection
+        const db2 = mongoose.createConnection(mongoDB2URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        });
+
+        const UserLogSchema = new mongoose.Schema({
+            users: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserModel'
+            }],
+            date: {
+                type: Date,
+                default: Date.now()
+            }
+        });
+
+        const UserLogModel = db2.model('UserLogModel', UserLogSchema);
+
+
         try {
             const id = req.params.id
             const user = await UserModel.findById(id)
 
+            updatedLog = await UserLogModel.findByIdAndUpdate(
+                // ID do modelo UserLogModel a ser atualizado
+                '6451195532608351a9b7badb', // substitua pelo ID correto
+                // objeto de atualização
+                { $push: { users: id } },
+                // opções
+                { new: true, upsert: true }
+              );
+              console.log(updatedLog);
             // tratando erro para caso não encontre o id
             if (!user) {
                 res.status(404).json({ msg: "Usuário não encontrado" })

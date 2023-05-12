@@ -98,38 +98,12 @@ const roController = {
 
             var ros = new RoModel();
 
-            ros.orgao = req.body.orgao;
-            ros.dataRegistro = req.body.dataRegistro;
-            ros.horaRegistro = req.body.horaRegistro;
-            ros.nomeRelator = req.body.nomeRelator;
-            ros.nomeresponsavel = req.body.nomeresponsavel;
-            ros.nomeColaborador = req.body.nomeColaborador;
-            ros.defeito = req.body.defeito;
-            ros.hardware = {
-                equipamento: req.body.hardware.equipamento,
-                posicao: req.body.hardware.posicao,
-                partnumber: req.body.hardware.partnumber,
-                serialNumber: req.body.hardware.serialNumber,
-            }
-            ros.software = {
-                versaoBD: req.body.software.versaoBD,
-                versaoSoftware: req.body.software.versaoSoftware,
-                LogsRO: req.body.software.LogsRO,
-
-            }
-            ros.titulo = req.body.titulo
-            ros.descricao = req.body.descricao
-            ros.resolucao = req.body.resolucao
-            ros.status = req.body.status
-            ros.categoria = req.body.categoria
-
             if (!ros._id) {
                 res.status(400).json({ msg: "Informe o id da RO!" })
             }
 
             const filter = { _id: req.body._id };
             const update = {
-
                 orgao: req.body.orgao,
                 dataRegistro: req.body.dataRegistro,
                 horaRegistro: req.body.horaRegistro,
@@ -137,23 +111,40 @@ const roController = {
                 nomeresponsavel: req.body.nomeresponsavel,
                 nomeColaborador: req.body.nomeColaborador,
                 defeito: req.body.defeito,
-                hardware: {
-                    equipamento: req.body.hardware.equipamento,
-                    posicao: req.body.hardware.posicao,
-                    partnumber: req.body.hardware.partnumber,
-                    serialNumber: req.body.hardware.serialNumber,
-                },
-                software: {
-                    versaoBD: req.body.software.versaoBD,
-                    versaoSoftware: req.body.software.versaoSoftware,
-                    LogsRO: req.body.software.LogsRO,
-                },
                 titulo: req.body.titulo,
                 descricao: req.body.descricao,
                 resolucao: req.body.resolucao,
                 status: req.body.status,
                 categoria: req.body.categoria,
             };
+
+
+            if (req.body.software) {
+                if (req.body.software.versaoBD) {
+                    update.software.versaoBD = req.body.software.versaoBD;
+                }
+                if (req.body.software.versaoSoftware) {
+                    update.software.versaoSoftware = req.body.software.versaoSoftware;
+                }
+                if (req.body.software.LogsRO) {
+                    update.software.LogsRO = req.body.software.LogsRO;
+                }
+            }
+
+            if (req.body.hardware) {
+                if (req.body.hardware.equipamento) {
+                    update.hardware.equipamento = req.body.hardware.equipamento;
+                }
+                if (req.body.hardware.posicao) {
+                    update.hardware.posicao = req.body.hardware.posicao;
+                }
+                if (req.body.hardware.partnumber) {
+                    update.hardware.partnumber = req.body.hardware.partnumber;
+                }
+                if (req.body.hardware.serialNumber) {
+                    update.hardware.serialNumber = req.body.hardware.serialNumber;
+                }
+            }
 
             console.log(ros)
             const response = await RoModel.findByIdAndUpdate(filter, update);
