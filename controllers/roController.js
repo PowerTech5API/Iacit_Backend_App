@@ -284,9 +284,8 @@ const roController = {
 
     filterRos: async (req, res) => {
         try {
-            const { status, nome, orgao, data, hardwareOrSoftware,dataOrg} = req.body;
+            const { status, nome, orgao, data, hardwareOrSoftware,dataOrg,nomeRelator,defeito} = req.body;
             let crescentedecrescente=1
-            console.log(dataOrg)
             const query = {};
 
             if (status !== undefined) {
@@ -305,6 +304,19 @@ const roController = {
             if (dataOrg !== undefined) {
                  crescentedecrescente=dataOrg;
             }
+
+            if (dataOrg !== undefined) {
+                crescentedecrescente=dataOrg;
+           }
+
+           if (nomeRelator !== undefined) {
+            query.nomeRelator=nomeRelator;
+       }
+
+       
+       if (defeito !== undefined) {
+        query.defeito=defeito;
+   }
 
             if (hardwareOrSoftware !== undefined) {
                 if (hardwareOrSoftware == 0) {
