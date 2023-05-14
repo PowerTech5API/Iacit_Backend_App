@@ -1,4 +1,6 @@
 const { Ros: RoModel } = require("../models/Ro");
+const { User: UserModel } = require("../models/User");
+
 const userController = require("../controllers/userController");
 
 
@@ -282,14 +284,17 @@ const roController = {
 
     filterRos: async (req, res) => {
         try {
-            const { status, userId, orgao, data, hardwareOrSoftware } = req.body;
+            const { status, nome, orgao, data, hardwareOrSoftware,dataOrg} = req.body;
+            let crescentedecrescente=1
+            console.log(dataOrg)
             const query = {};
 
             if (status !== undefined) {
                 query.status = status;
             }
-            if (userId !== undefined) {
-                query.user = userId;
+            if (nome !== undefined) {
+                const user = await UserModel.findOne({name:nome}, { password: 0 });
+                query.user = user.id;
             }
             if (orgao !== undefined) {
                 query.orgao = orgao;
@@ -297,6 +302,10 @@ const roController = {
             if (data !== undefined) {
                 query.dataRegistro = data;
             }
+            if (dataOrg !== undefined) {
+                 crescentedecrescente=dataOrg;
+            }
+
             if (hardwareOrSoftware !== undefined) {
                 if (hardwareOrSoftware == 0) {
                     query['hardware.equipamento'] = { $exists: true };
@@ -310,7 +319,7 @@ const roController = {
                 }
             }
 
-            const ross = await RoModel.find(query).populate('user');
+            const ross = await RoModel.find(query).populate('user').sort({ createdAt: crescentedecrescente });;
 
             const result = ross.map((ros) => {
                 return {
@@ -329,6 +338,7 @@ const roController = {
                     resolucao: ros.resolucao,
                     status: ros.status,
                     categoria: ros.categoria,
+                    createdAt: ros.createdAt,
                     user: ros.user ? { id: ros.user._id, name: ros.user.name } : null,
                 };
             });
