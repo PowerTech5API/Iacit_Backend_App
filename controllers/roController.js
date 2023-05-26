@@ -164,8 +164,6 @@ const roController = {
             const ros = await RoModel.findById(id);
             res.json(ros)
 
-
-
         }
         catch (error) {
             console.log(error)
@@ -206,6 +204,19 @@ const roController = {
         }
     },
 
+    getAllByUserId: async (req, res) => {
+        console.log(req.params.userId)
+        try {
+            const userId = req.params.userId; // Obtém o ID do usuário a partir dos parâmetros da requisição
+            const ros = await RoModel.find({ user: userId }); // Filtra as ROs com base no ID do usuário
+    
+            res.json(ros);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Erro ao buscar as ROs do usuário' });
+        }
+    },
+    
     getByUserStatus: async (req, res) => {
         try {
             try {
@@ -284,16 +295,16 @@ const roController = {
 
     filterRos: async (req, res) => {
         try {
-            const { status, nome, orgao, data, hardwareOrSoftware,dataOrg,nomeRelator,defeito} = req.body;
-            let crescentedecrescente=-1
-            
+            const { status, nome, orgao, data, hardwareOrSoftware, dataOrg, nomeRelator, defeito } = req.body;
+            let crescentedecrescente = -1
+
             const query = {};
 
             if (status !== undefined) {
                 query.status = status;
             }
             if (nome !== undefined) {
-                const user = await UserModel.findOne({name:nome}, { password: 0 });
+                const user = await UserModel.findOne({ name: nome }, { password: 0 });
                 query.user = user.id;
             }
             if (orgao !== undefined) {
@@ -303,21 +314,21 @@ const roController = {
                 query.dataRegistro = data;
             }
             if (dataOrg !== undefined) {
-                if(dataOrg=="Antigo"){
-                    crescentedecrescente=1;
-            }
+                if (dataOrg == "Antigo") {
+                    crescentedecrescente = 1;
                 }
+            }
 
-          
 
-           if (nomeRelator !== undefined) {
-            query.nomeRelator=nomeRelator;
-       }
 
-       
-       if (defeito !== undefined) {
-        query.defeito=defeito;
-   }
+            if (nomeRelator !== undefined) {
+                query.nomeRelator = nomeRelator;
+            }
+
+
+            if (defeito !== undefined) {
+                query.defeito = defeito;
+            }
 
             if (hardwareOrSoftware !== undefined) {
                 if (hardwareOrSoftware == 0) {

@@ -6,9 +6,19 @@ const chatController = {
     //  No momentos está incluindo todos usuários, precisa fazer elação usuario RO
     createNew: async (req, res) => {
         try {
-            const { roId } = req.body;
-            const roUsers = await UserModel.find({ ro: roId });
-            const userRefs = roUsers.map(user => user._id);
+            const { roId, users } = req.body;
+            const userRefs = [];
+
+            for (const el of users) {
+                const user = await UserModel.findOne({ _id: el });
+                if (user) {
+                    userRefs.push(user._id);
+                } else {
+                    res.status(500).json({ error: "Id do usuário " + el + " não existe" });
+                    return;
+                }
+            }
+  
 
             const newChat = new ChatModel({
                 ro: roId,
@@ -23,7 +33,8 @@ const chatController = {
             console.log(error);
             res.status(500).json({ error: "Erro ao criar o chat." });
         }
-    },
+    }
+    ,
 
     addMessage: async (req, res) => {
         try {
@@ -57,24 +68,34 @@ const chatController = {
     getAllByRO: async (req, res) => {
         try {
             const { roId } = req.params;
-            const roChats = await ChatModel.findById(roId)
+            const messageCount = parseInt(req.query.messageCount); // Obtém o valor do parâmetro opcional 'messageCount' como um número inteiro
+
+            const chat = await ChatModel.findById(roId)
                 .populate({
-                    path: "messages",
-                    select: ['content', 'sender', 'timestamp'],
+                    path: 'messages',
+                    select: 'content sender timestamp',
                     populate: {
                         path: 'sender',
-                        select: "name"
-                    }
-                }).lean();
+                        select: 'name idUser',
+                    },
+                })
+                .lean();
 
-                roChats.messages = roChats.messages.map((message) => {
+            chat.messages = chat.messages.map((message) => {
+                if (message.sender) {
+                    console.log(message.sender)
+                    message.senderName = message.sender.name; // Adiciona a propriedade senderName com o nome do remetente
+                }
 
-                    message.day = moment(message.timestamp).format('DD/MM/YYYY');
-                    message.hour = moment(message.timestamp).format('HH:mm');
-                    delete message.timestamp;
-                    return message;
-                });
-
+                message.day = moment(message.timestamp).format('DD/MM/YYYY');
+                message.hour = moment(message.timestamp).format('HH:mm');
+                delete message.sender
+                delete message.timestamp;
+                return message;
+            });
+            if (messageCount && chat.messages.length > messageCount) {
+                chat.messages = chat.messages.slice(-messageCount);
+            }
             res.json(roChats);
         } catch (error) {
             console.log(error);
@@ -96,32 +117,43 @@ const chatController = {
 
     getById: async (req, res) => {
         try {
-            const chat = await ChatModel.findById(req.params.chatId)
+            const chatId = req.params.chatId;
+            const messageCount = parseInt(req.query.messageCount); // Obtém o valor do parâmetro opcional 'messageCount' como um número inteiro
+            const chat = await ChatModel.findById(chatId)
                 .populate({
-                    path: "messages",
-                    select: "content sender timestamp",
+                    path: 'messages',
+                    select: 'content sender timestamp',
                     populate: {
-                        path: "sender",
-                        select: "name idUser",
-
+                        path: 'sender',
+                        select: 'name idUser',
                     },
                 })
                 .lean();
+            chat.messages.sort(chat.messages.timestamp)
 
-            chat.messages = chat.messages.map((message) => {
+            chat.messages = chat.messages.map((message, index) => {
 
+                if (message.sender) {
+                    message.senderName = message.sender.name; // Adiciona a propriedade senderName com o nome do remetente
+                }
                 message.day = moment(message.timestamp).format('DD/MM/YYYY');
                 message.hour = moment(message.timestamp).format('HH:mm');
+                delete message.sender;
                 delete message.timestamp;
                 return message;
             });
+
+            if (messageCount && chat.messages.length > messageCount) {
+                chat.messages = chat.messages.slice(-messageCount);
+            }
 
             res.json(chat);
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
-        }c
+        }
     },
+
 
     deleteChat: async (req, res) => {
         try {
@@ -139,34 +171,60 @@ const chatController = {
         }
     },
     sendEmail: async (req, res) => {
-  
+
         try {
             const users = await UserModel.aggregate([
-              // Faz um lookup na collection de configs, trazendo apenas a última config de cada usuário
-              { $lookup: {
-                from: "configs",
-                let: { userId: "$_id" },
-                pipeline: [
-                  { $match: { $expr: { $eq: [ "$userId", "$$userId" ] } } },
-                  { $sort: { acceptedAt: -1 } },
-                  { $limit: 1 }
-                ],
-                as: "latestConfig"
-              }},
-              // Faz o unwind da array "latestConfig" para que possa ser usada na próxima etapa da agregação
-              { $unwind: { path: "$latestConfig", preserveNullAndEmptyArrays: true } },
-              // Filtra os usuários que possuem a última configuração e que receberam o email
-              { $match: { "latestConfig.receiveEmails": true } },
-              // Projeta apenas os campos "name" e "email"
-              { $project: { name: 1, email: 1 } }
+                // Faz um lookup na collection de configs, trazendo apenas a última config de cada usuário
+                {
+                    $lookup: {
+                        from: "configs",
+                        let: { userId: "$_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$userId", "$$userId"] } } },
+                            { $sort: { acceptedAt: -1 } },
+                            { $limit: 1 }
+                        ],
+                        as: "latestConfig"
+                    }
+                },
+                // Faz o unwind da array "latestConfig" para que possa ser usada na próxima etapa da agregação
+                { $unwind: { path: "$latestConfig", preserveNullAndEmptyArrays: true } },
+                // Filtra os usuários que possuem a última configuração e que receberam o email
+                { $match: { "latestConfig.receiveEmails": true } },
+                // Projeta apenas os campos "name" e "email"
+                { $project: { name: 1, email: 1 } }
             ]);
-        
+
             res.json(users);
-          } catch (error) {
+        } catch (error) {
             console.error(error);
             res.status(500).send("Erro ao buscar usuários");
-          }
+        }
     },
+
+    deleteMessageById: async (req, res) => {
+        try {
+            const messageId = req.params.messageId;
+
+            const chat = await ChatModel.findOne({ 'messages._id': messageId });
+
+            if (!chat) {
+                return res.status(404).json({ error: 'Message not found' });
+            }
+
+            chat.messages.pull(messageId);
+
+            await chat.save();
+
+            res.json({ message: 'Message deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    }
+
+
+
 }
 
 module.exports = chatController;
