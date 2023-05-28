@@ -96,7 +96,7 @@ const chatController = {
             if (messageCount && chat.messages.length > messageCount) {
                 chat.messages = chat.messages.slice(-messageCount);
             }
-            res.json(roChats);
+            res.json(chat);
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: "Falha ao encontrar o chat." });
