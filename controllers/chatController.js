@@ -70,7 +70,7 @@ const chatController = {
             const { roId } = req.params;
             const messageCount = parseInt(req.query.messageCount); // Obtém o valor do parâmetro opcional 'messageCount' como um número inteiro
 
-            const chat = await ChatModel.findById(roId)
+            const chat = await ChatModel.findOne({ro: roId})
                 .populate({
                     path: 'messages',
                     select: 'content sender timestamp',
