@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RosSchema = new Schema({
+    codigo: String,
     orgao :  String ,
     dataRegistro :  String ,
     horaRegistro :  String ,

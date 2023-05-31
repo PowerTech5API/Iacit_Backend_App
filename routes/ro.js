@@ -13,4 +13,4 @@ router.route("/ro/userStatus/:status").get((req, res) => roController.getByUserS
 router.route("/ro/getOrgaos").get((req, res) => roController.getOrgaos(req, res));
 router.route("/ro/filterRo").post((req, res) => roController.filterRos(req, res));
 
-module.exports = router;
+module.exports = router;    

@@ -6,7 +6,7 @@ const userController = require("../controllers/userController");
 
 const jwt = require('jsonwebtoken')
 require("dotenv").config()
-
+const shortid = require('shortid');
 const roController = {
 
     getAll: async (req, res) => {
@@ -53,7 +53,7 @@ const roController = {
             } catch (err) {
                 res.status(500).send(err.message);
             }
-
+            const codigo = `RO-${shortid.generate()}`;
             var ros = new RoModel();
 
             ros.orgao = req.body.orgao;
@@ -81,8 +81,11 @@ const roController = {
             ros.status = req.body.status
             ros.categoria = req.body.categoria
             ros.user = req.userId
+            ros.codigo = `#${codigo}`;
+            console.log(ros.codigo);
+
             const response = await RoModel.create(ros);
-            res.json(ros);
+            res.json(ros);  
             console.log("RO criado com sucesso!");
         }
 
@@ -190,10 +193,9 @@ const roController = {
         try {
             const status = req.params.status;
             const ros = await RoModel.find({ status: status });
-            console.log(ros)
             if (!ros) {
 
-                res.json("vazio")
+                res.json("Sem resultados")
 
             }
             res.json(ros)
@@ -209,14 +211,14 @@ const roController = {
         try {
             const userId = req.params.userId; // Obtém o ID do usuário a partir dos parâmetros da requisição
             const ros = await RoModel.find({ user: userId }); // Filtra as ROs com base no ID do usuário
-    
+
             res.json(ros);
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Erro ao buscar as ROs do usuário' });
         }
     },
-    
+
     getByUserStatus: async (req, res) => {
         try {
             try {
