@@ -103,7 +103,7 @@ const roController = {
 
             var ros = new RoModel();
 
-            if (!ros._id) {
+            if (!req.body._id) {
                 res.status(400).json({ msg: "Informe o id da RO!" })
             }
 
@@ -151,9 +151,8 @@ const roController = {
                 }
             }
 
-            console.log(ros)
             const response = await RoModel.findByIdAndUpdate(filter, update);
-            res.json(ros);
+            res.json(response);
 
         }
         catch (error) {
@@ -205,7 +204,6 @@ const roController = {
             console.log(error)
         }
     },
-
     getAllByUserId: async (req, res) => {
         console.log(req.params.userId)
         try {
@@ -218,7 +216,6 @@ const roController = {
             res.status(500).json({ error: 'Erro ao buscar as ROs do usuário' });
         }
     },
-
     getByUserStatus: async (req, res) => {
         try {
             try {
@@ -268,7 +265,6 @@ const roController = {
             console.log(error)
         }
     },
-
     getOrgaos: async (req, res) => {
         try {
             const orgaos = await RoModel.distinct("orgao");
@@ -281,7 +277,6 @@ const roController = {
             console.log(error);
         }
     },
-
     getOrgaos: async (req, res) => {
         try {
             const orgaos = await RoModel.distinct("orgao");
@@ -294,7 +289,6 @@ const roController = {
             console.log(error);
         }
     },
-
     filterRos: async (req, res) => {
         try {
             const { status, nome, orgao, data, hardwareOrSoftware, dataOrg, nomeRelator, defeito } = req.body;
@@ -378,7 +372,121 @@ const roController = {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
         }
-    }
+    },
+    filterRosUser: async (req, res) => {
+        try {
+            const { authorization } = req.headers;
+
+            if (!authorization) {
+                return res.send(401);
+            }
+            const parts = authorization.split(" ");
+
+            if (parts.length !== 2) {
+                return res.send(401);
+            }
+
+            const [schema, token] = parts;
+
+            if (schema !== "Bearer") {
+                return res.send(401)
+            }
+
+            jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+                if (error) {
+                    return res.status(401).send({ message: "Token Inválido" });
+                }
+
+                req.userId = decoded.id;
+            });
+
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+        
+        try {
+            const { status, nome, orgao, data, hardwareOrSoftware, dataOrg, nomeRelator, defeito } = req.body;
+            let crescentedecrescente = -1
+
+            const query = {};
+
+            if (status !== undefined) {
+                query.status = status;
+            }
+            if (nome !== undefined) {
+                const user = await UserModel.findOne({ name: nome }, { password: 0 });
+                query.user = user.id;
+            }
+            if (orgao !== undefined) {
+                query.orgao = orgao;
+            }
+            if (data !== undefined) {
+                query.dataRegistro = data;
+            }
+            if (dataOrg !== undefined) {
+                if (dataOrg == "Antigo") {
+                    crescentedecrescente = 1;
+                }
+            }
+          
+            query.user=req.userId
+
+
+            if (nomeRelator !== undefined) {
+                query.nomeRelator = nomeRelator;
+            }
+
+
+            if (defeito !== undefined) {
+                query.defeito = defeito;
+            }
+
+            if (hardwareOrSoftware !== undefined) {
+                if (hardwareOrSoftware == 0) {
+                    query['hardware.equipamento'] = { $exists: true };
+                } else if (hardwareOrSoftware == 1) {
+                    query['software.versaoBD'] = { $exists: true };
+                } else if (hardwareOrSoftware == 2) {
+                    query.$or = [
+                        { 'hardware.equipamento': { $exists: true } },
+                        { 'software.versaoBD': { $exists: true } }
+                    ];
+                }
+            }
+            const ross = await RoModel.find(query).populate('user').sort({ createdAt: crescentedecrescente });;
+
+            const result = ross.map((ros) => {
+                return {
+                    id: ros._id,
+                    orgao: ros.orgao,
+                    dataRegistro: ros.dataRegistro,
+                    horaRegistro: ros.horaRegistro,
+                    nomeRelator: ros.nomeRelator,
+                    nomeresponsavel: ros.nomeresponsavel,
+                    nomeColaborador: ros.nomeColaborador,
+                    defeito: ros.defeito,
+                    hardware: ros.hardware,
+                    software: ros.software,
+                    titulo: ros.titulo,
+                    descricao: ros.descricao,
+                    resolucao: ros.resolucao,
+                    status: ros.status,
+                    categoria: ros.categoria,
+                    createdAt: ros.createdAt,
+                    user: ros.user ? { id: ros.user._id, name: ros.user.name } : null,
+                };
+            });
+
+            if (result.length == 0) {
+                res.json({ msg: "Nenhuma RO encontrada com esse filtro" })
+            } else {
+                res.json(result);
+            }
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
 
 }
 module.exports = roController;

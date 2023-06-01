@@ -1,4 +1,5 @@
 const { User: UserModel } = require("../models/User");
+const { Ros: RoModel } = require("../models/Ro");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
@@ -131,8 +132,13 @@ const userController = {
             if (!user) {
                 res.status(404).json({ msg: "Usuário não encontrado" })
             }
+            
 
             const deletedUser = await UserModel.findByIdAndDelete(id)
+            await RoModel.updateMany(
+                { user: id, status: { $ne: "Atendido" } },
+                { $set: { status: "Inativo" } }
+              );
 
             res.status(200).json({ msg: "Usuário deletado com sucesso" })
 
