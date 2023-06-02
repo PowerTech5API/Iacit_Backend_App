@@ -1,6 +1,7 @@
 const { Chat: ChatModel } = require("../models/Chat");
 const { User: UserModel } = require("../models/User");
 const moment = require('moment');
+const jwt = require('jsonwebtoken');
 
 const chatController = {
     //  No momentos está incluindo todos usuários, precisa fazer elação usuario RO
@@ -18,7 +19,7 @@ const chatController = {
                     return;
                 }
             }
-  
+
 
             const newChat = new ChatModel({
                 ro: roId,
@@ -38,7 +39,35 @@ const chatController = {
 
     addMessage: async (req, res) => {
         try {
-            const { senderId, chatId, content } = req.body;
+
+            const { authorization } = req.headers;
+
+            if (!authorization) {
+                return res.send(401);
+            }
+            const parts = authorization.split(" ");
+
+            if (parts.length !== 2) {
+                return res.send(401);
+            }
+
+            const [schema, token] = parts;
+
+            if (schema !== "Bearer") {
+                return res.send(401)
+            }
+
+            jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+                if (error) {
+                    return res.status(401).send({ message: "Token Inválido" });
+                }
+
+                req.userId = decoded.id;
+            });
+
+            const senderId = req.userId;
+
+            const { chatId, content } = req.body;
 
             if (!content) {
                 return res.status(400).json({ error: "Mensagem vazia" });
@@ -54,10 +83,12 @@ const chatController = {
                 return res.status(404).json({ error: "Usuário não encontrado." });
             }
 
-            chat.messages.push({ sender: sender._id, content, senderName: sender.name });
+            const message = { sender: sender._id, content, senderName: sender.name };
+            chat.messages.push(message);
+
             await chat.save();
 
-            res.json({ msg: "Mensagem enviada" });
+            res.json(chat.messages[chat.messages.length - 1]);
 
         } catch (error) {
             console.log(error);
@@ -70,7 +101,7 @@ const chatController = {
             const { roId } = req.params;
             const messageCount = parseInt(req.query.messageCount); // Obtém o valor do parâmetro opcional 'messageCount' como um número inteiro
 
-            const chat = await ChatModel.findOne({ro: roId})
+            const chat = await ChatModel.findOne({ ro: roId })
                 .populate({
                     path: 'messages',
                     select: 'content sender timestamp',
