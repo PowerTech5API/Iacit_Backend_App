@@ -53,9 +53,71 @@ const roController = {
             } catch (err) {
                 res.status(500).send(err.message);
             }
+            const allowedDateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+            const allowedTimeRegex = /^\d{2}:\d{2}$/;
+            const allowedNameRegex = /^[a-zA-Z\s]+$/;
+            
+            if (!req.body.orgao.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'orgao' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.dataRegistro.match(allowedDateRegex)) {
+              return res.status(400).json({ message: "Campo 'dataRegistro' inválido. Deve estar no formato DD/MM/AAAA." });
+            }
+            if (!req.body.horaRegistro.match(allowedTimeRegex)) {
+              return res.status(400).json({ message: "Campo 'horaRegistro' inválido. Deve estar no formato HH:MM." });
+            }
+            if (!req.body.nomeRelator.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'nomeRelator' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.nomeresponsavel.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'nomeresponsavel' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.nomeColaborador.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'nomeColaborador' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.titulo.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'titulo' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.descricao.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.status.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'status' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (!req.body.categoria.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'categoria' inválido. Deve conter apenas letras e espaços." });
+            }
+            if (typeof req.body.defeito !== 'string') {
+              return res.status(400).json({ message: "Campo 'defeito' inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.hardware.equipamento !== 'string') {
+              return res.status(400).json({ message: "Campo 'equipamento' do hardware inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.hardware.posicao !== 'string') {
+              return res.status(400).json({ message: "Campo 'posicao' do hardware inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.hardware.partnumber !== 'string') {
+              return res.status(400).json({ message: "Campo 'partnumber' do hardware inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.hardware.serialNumber !== 'string') {
+              return res.status(400).json({ message: "Campo 'serialNumber' do hardware inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.software.versaoBD !== 'string') {
+              return res.status(400).json({ message: "Campo 'versaoBD' do software inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.software.versaoSoftware !== 'string') {
+              return res.status(400).json({ message: "Campo 'versaoSoftware' do software inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.software.LogsRO !== 'string') {
+              return res.status(400).json({ message: "Campo 'LogsRO' do software inválido. Deve ser uma string." });
+            }
+            if (typeof req.body.resolucao !== 'string') {
+              return res.status(400).json({ message: "Campo 'resolucao' inválido. Deve ser uma string." });
+            }
+            
             const codigo = `RO-${shortid.generate()}`;
             var ros = new RoModel();
-
+            
             ros.orgao = req.body.orgao;
             ros.dataRegistro = req.body.dataRegistro;
             ros.horaRegistro = req.body.horaRegistro;
@@ -64,35 +126,32 @@ const roController = {
             ros.nomeColaborador = req.body.nomeColaborador;
             ros.defeito = req.body.defeito;
             ros.hardware = {
-                equipamento: req.body.hardware.equipamento,
-                posicao: req.body.hardware.posicao,
-                partnumber: req.body.hardware.partnumber,
-                serialNumber: req.body.hardware.serialNumber,
-            }
+              equipamento: req.body.hardware.equipamento,
+              posicao: req.body.hardware.posicao,
+              partnumber: req.body.hardware.partnumber,
+              serialNumber: req.body.hardware.serialNumber,
+            };
             ros.software = {
-                versaoBD: req.body.software.versaoBD,
-                versaoSoftware: req.body.software.versaoSoftware,
-                LogsRO: req.body.software.LogsRO,
-
-            }
-            ros.titulo = req.body.titulo
-            ros.descricao = req.body.descricao
-            ros.resolucao = req.body.resolucao
-            ros.status = req.body.status
-            ros.categoria = req.body.categoria
-            ros.user = req.userId
+              versaoBD: req.body.software.versaoBD,
+              versaoSoftware: req.body.software.versaoSoftware,
+              LogsRO: req.body.software.LogsRO,
+            };
+            ros.titulo = req.body.titulo;
+            ros.descricao = req.body.descricao;
+            ros.resolucao = req.body.resolucao;
+            ros.status = req.body.status;
+            ros.categoria = req.body.categoria;
+            ros.user = req.userId;
             ros.codigo = `#${codigo}`;
             console.log(ros.codigo);
-
+            
             const response = await RoModel.create(ros);
-            res.json(ros);  
+            res.json(ros);
             console.log("RO criado com sucesso!");
-        }
-
-
-        catch (error) {
-            console.log(error)
-        }
+          } catch (error) {
+            console.log(error);
+          }
+        
 
 
 
