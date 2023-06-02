@@ -83,19 +83,19 @@ const chatController = {
                     },
                 })
                 .lean();
+                chat.messages = chat.messages.map((message) => {
 
-            chat.messages = chat.messages.map((message) => {
-                if (message.sender) {
-                    console.log(message.sender)
-                    message.senderName = message.sender.name; // Adiciona a propriedade senderName com o nome do remetente
-                }
-
-                message.day = moment(message.timestamp).format('DD/MM/YYYY');
-                message.hour = moment(message.timestamp).format('HH:mm');
-                delete message.sender
-                delete message.timestamp;
-                return message;
-            });
+                    if (message.sender) {
+                        message.senderName = message.sender.name; // Adiciona a propriedade senderName com o nome do remetente
+                        message.senderId = message.sender._id;
+                    }
+                    message.day = moment(message.timestamp).format('DD/MM/YYYY');
+                    message.hour = moment(message.timestamp).format('HH:mm');
+                    delete message.sender;
+                    delete message.timestamp;
+                    return message;
+                });
+    
             if (messageCount && chat.messages.length > messageCount) {
                 chat.messages = chat.messages.slice(-messageCount);
             }
@@ -134,10 +134,11 @@ const chatController = {
                 .lean();
             chat.messages.sort(chat.messages.timestamp)
 
-            chat.messages = chat.messages.map((message, index) => {
+            chat.messages = chat.messages.map((message) => {
 
                 if (message.sender) {
                     message.senderName = message.sender.name; // Adiciona a propriedade senderName com o nome do remetente
+                    message.senderId = message.sender._id;
                 }
                 message.day = moment(message.timestamp).format('DD/MM/YYYY');
                 message.hour = moment(message.timestamp).format('HH:mm');
