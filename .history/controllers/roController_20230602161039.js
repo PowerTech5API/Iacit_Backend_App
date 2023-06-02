@@ -57,62 +57,28 @@ const roController = {
             const allowedTimeRegex = /^\d{2}:\d{2}$/;
             const allowedNameRegex = /^[a-zA-Z\s]+$/;
             
-            if (!req.body.orgao.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'orgao' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.dataRegistro.match(allowedDateRegex)) {
-              return res.status(400).json({ message: "Campo 'dataRegistro' inválido. Deve estar no formato DD/MM/AAAA." });
-            }
-            if (!req.body.horaRegistro.match(allowedTimeRegex)) {
-              return res.status(400).json({ message: "Campo 'horaRegistro' inválido. Deve estar no formato HH:MM." });
-            }
-            if (!req.body.nomeRelator.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'nomeRelator' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.nomeresponsavel.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'nomeresponsavel' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.nomeColaborador.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'nomeColaborador' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.titulo.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'titulo' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.descricao.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.status.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'status' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (!req.body.categoria.match(allowedNameRegex)) {
-              return res.status(400).json({ message: "Campo 'categoria' inválido. Deve conter apenas letras e espaços." });
-            }
-            if (typeof req.body.defeito !== 'string') {
-              return res.status(400).json({ message: "Campo 'defeito' inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.hardware.equipamento !== 'string') {
-              return res.status(400).json({ message: "Campo 'equipamento' do hardware inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.hardware.posicao !== 'string') {
-              return res.status(400).json({ message: "Campo 'posicao' do hardware inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.hardware.partnumber !== 'string') {
-              return res.status(400).json({ message: "Campo 'partnumber' do hardware inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.hardware.serialNumber !== 'string') {
-              return res.status(400).json({ message: "Campo 'serialNumber' do hardware inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.software.versaoBD !== 'string') {
-              return res.status(400).json({ message: "Campo 'versaoBD' do software inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.software.versaoSoftware !== 'string') {
-              return res.status(400).json({ message: "Campo 'versaoSoftware' do software inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.software.LogsRO !== 'string') {
-              return res.status(400).json({ message: "Campo 'LogsRO' do software inválido. Deve ser uma string." });
-            }
-            if (typeof req.body.resolucao !== 'string') {
-              return res.status(400).json({ message: "Campo 'resolucao' inválido. Deve ser uma string." });
+            if (
+              !req.body.orgao.match(allowedNameRegex) ||
+              !req.body.dataRegistro.match(allowedDateRegex) ||
+              !req.body.horaRegistro.match(allowedTimeRegex) ||
+              !req.body.nomeRelator.match(allowedNameRegex) ||
+              !req.body.nomeresponsavel.match(allowedNameRegex) ||
+              !req.body.nomeColaborador.match(allowedNameRegex) ||
+              !req.body.titulo.match(allowedNameRegex) ||
+              !req.body.descricao.match(allowedNameRegex) ||
+              !req.body.status.match(allowedNameRegex) ||
+              !req.body.categoria.match(allowedNameRegex) ||
+              typeof req.body.defeito !== 'string' ||
+              typeof req.body.hardware.equipamento !== 'string' ||
+              typeof req.body.hardware.posicao !== 'string' ||
+              typeof req.body.hardware.partnumber !== 'string' ||
+              typeof req.body.hardware.serialNumber !== 'string' ||
+              typeof req.body.software.versaoBD !== 'string' ||
+              typeof req.body.software.versaoSoftware !== 'string' ||
+              typeof req.body.software.LogsRO !== 'string' ||
+              typeof req.body.resolucao !== 'string'
+            ) {
+              return res.status(400).json({ message: "Campo inválido" });
             }
             
             const codigo = `RO-${shortid.generate()}`;
