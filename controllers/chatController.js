@@ -39,35 +39,7 @@ const chatController = {
 
     addMessage: async (req, res) => {
         try {
-
-            const { authorization } = req.headers;
-
-            if (!authorization) {
-                return res.send(401);
-            }
-            const parts = authorization.split(" ");
-
-            if (parts.length !== 2) {
-                return res.send(401);
-            }
-
-            const [schema, token] = parts;
-
-            if (schema !== "Bearer") {
-                return res.send(401)
-            }
-
-            jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
-                if (error) {
-                    return res.status(401).send({ message: "Token Inválido" });
-                }
-
-                req.userId = decoded.id;
-            });
-
-            const senderId = req.userId;
-
-            const { chatId, content } = req.body;
+            const { senderId, chatId, content } = req.body;
 
             if (!content) {
                 return res.status(400).json({ error: "Mensagem vazia" });
