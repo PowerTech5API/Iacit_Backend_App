@@ -56,7 +56,6 @@ const roController = {
             const allowedDateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
             const allowedTimeRegex = /^\d{2}:\d{2}$/;
             const allowedNameRegex = /^[a-zA-Z\u00C0-\u017F\s']+$/;
-            const allowedDescriptionRegex = /^[a-zA-Z\u00C0-\u017F\s',\p{P}]+$/u;
             
             if (!req.body.orgao.match(allowedNameRegex)) {
               return res.status(400).json({ message: "Campo 'orgao' inválido. Deve conter apenas letras e espaços." });
@@ -79,8 +78,8 @@ const roController = {
             if (!req.body.titulo.match(allowedNameRegex)) {
               return res.status(400).json({ message: "Campo 'titulo' inválido. Deve conter apenas letras e espaços." });
             }
-            if (!req.body.descricao.match(allowedDescriptionRegex)) {
-              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras de A a Z (maiúsculas e minúsculas), caracteres acentuados ou caracteres de pontuação." });
+            if (!req.body.descricao.match(allowedNameRegex)) {
+              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras e espaços." });
             }
             if (!req.body.status.match(allowedNameRegex)) {
               return res.status(400).json({ message: "Campo 'status' inválido. Deve conter apenas letras e espaços." });

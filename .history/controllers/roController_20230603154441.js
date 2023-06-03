@@ -80,7 +80,7 @@ const roController = {
               return res.status(400).json({ message: "Campo 'titulo' inválido. Deve conter apenas letras e espaços." });
             }
             if (!req.body.descricao.match(allowedDescriptionRegex)) {
-              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras de A a Z (maiúsculas e minúsculas), caracteres acentuados ou caracteres de pontuação." });
+              return res.status(400).json({ message: "Campo 'descricao' inválido. Deve conter apenas letras e espaços." });
             }
             if (!req.body.status.match(allowedNameRegex)) {
               return res.status(400).json({ message: "Campo 'status' inválido. Deve conter apenas letras e espaços." });
