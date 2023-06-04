@@ -18,7 +18,7 @@
     "moment": "^2.29.4",
     "mongoose": "^7.0.2",
     "nanoid": "^4.0.2",
-    "nodemailer": "^6.9.1",
+    "nodemailer": "^6.9.3",
     "password-validator": "^5.3.0",
     "shortid": "^2.2.16",
     "uniqid": "^5.4.0"

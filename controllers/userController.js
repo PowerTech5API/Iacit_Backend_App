@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const passwordValidator = require('password-validator');
+const { enviarSenhaPorEmail } = require('../services/email');
+
 
 require("dotenv").config()
 
@@ -229,6 +231,30 @@ const userController = {
         catch (error) {
             console.log(error)
         }
+    },
+
+    recuperarsenha: async (req, res) => {
+        try {
+            const {email} = req.params // pega id pela que é passado pela rota
+            const user = await UserModel.findOne({email}); // não exibe a senha
+
+            // tratando erro para caso não encontre o id
+            if (!user) {
+                res.status(404).json({ msg: "Email não encontrado" })
+
+            }
+            else
+            {
+
+            enviarSenhaPorEmail(user.email, user.password);
+
+            res.status(200).send('E-mail enviado com sucesso');
+            }
+          
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Erro ao enviar e-mail');
+          }
     },
         
 }

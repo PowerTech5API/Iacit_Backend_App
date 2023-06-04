@@ -33,6 +33,14 @@ var RosSchema = new Schema({
         ref: 'User'
       },
    
+      //Rota analise
+      defeito:String,
+      melhorias:String,
+      outros:String,
+      justificativa:String,
+
+      //Rota recorrer
+      recorrer:[String]
      
 } ,{timestamps:true}
 );

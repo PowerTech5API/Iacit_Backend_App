@@ -9,5 +9,7 @@ router.route("/user/login").post((req, res) => userController.login(req, res));
 router.route("/user").put((req, res) => userController.update(req, res));
 router.route("/user/:id").delete((req, res) => userController.delete(req, res));
 router.route("/user/admin").get((req, res) => userController.Admin(req, res));
+router.route("/user/recuperarsenha/:email").get((req, res) => userController.recuperarsenha(req, res));
+
 
 module.exports = router;

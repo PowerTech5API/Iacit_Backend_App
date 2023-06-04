@@ -181,6 +181,10 @@ const roController = {
                 resolucao: req.body.resolucao,
                 status: req.body.status,
                 categoria: req.body.categoria,
+                defeito: req.body.defeito,
+                melhorias: req.body.melhorias,
+                outros: req.body.outros,
+                justificativa: req.body.justificativa,
             };
 
 
@@ -546,7 +550,84 @@ const roController = {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
         }
+    }, 
+    analise: async (req, res) => {
+        try {
+
+            if (!req.body._id) {
+                res.status(400).json({ msg: "Informe o id da RO!" })
+            }
+
+            const filter = { _id: req.body._id };
+            const update = {
+                defeito: req.body.defeito,
+                melhorias: req.body.melhorias,
+                outros: req.body.outros,
+                justificativa: req.body.justificativa,
+                
+            };
+
+
+
+            const response = await RoModel.findByIdAndUpdate(filter, update);
+            res.json(response);
+
+        }
+        catch (error) {
+            console.log(error)
+        }
+
     },
+    recorrer: async (req, res) => {
+        try {
+
+            try {
+                const { authorization } = req.headers;
+
+                if (!authorization) {
+                    return res.send(401);
+                }
+
+                const parts = authorization.split(" ");
+
+                if (parts.length !== 2) {
+                    return res.send(401);
+                }
+
+                const [schema, token] = parts;
+
+                if (schema !== "Bearer") {
+                    return res.send(401)
+                }
+
+                jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+                    if (error) {
+                        return res.status(401).send({ message: "Token Inválido" });
+                    }
+
+                    req.userId = decoded.id;
+                });
+
+            } catch (err) {
+                res.status(500).send(err.message);
+            }
+
+            if (!req.body._id) {
+                res.status(400).json({ msg: "Informe o id da RO!" })
+            }
+
+            const filter = { _id: req.body._id };
+            const update =  { $push: { recorrer: req.body.recorrer } }
+            const response = await RoModel.findByIdAndUpdate(filter, update);
+            res.json(response);
+
+        }
+        catch (error) {
+            console.log(error)
+        }
+
+    },
+
 
 }
 module.exports = roController;
