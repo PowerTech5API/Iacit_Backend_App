@@ -4,20 +4,21 @@ const nodemailer = require('nodemailer');
 function enviarSenhaPorEmail(email, senha) {
   // Configurar o transporte de e-mail
   var transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+    host: 'smtp.office365.com',
+    port: 587,
+    secure: false,
     auth: {
-      user: "02f3e0b8950ce5",
-      pass: "dd1661e763bce6"
+      user: "PowerTech123@outlook.com.br",
+      pass: "qwer1234!@#$"
     }
   });
-
+  console.log(email,senha)
   // Opções do e-mail
   const mailOptions = {
-    from: 'lucca14santiago@gmail.com',  // Insira seu e-mail aqui
+    from: 'PowerTech123@outlook.com.br',
     to: email,
     subject: 'Recuperação de senha',
-    text: `Sua senha é: ${senha}`
+    text: `Sua nova senha é: ${senha}`
   };
 
   // Enviar e-mail

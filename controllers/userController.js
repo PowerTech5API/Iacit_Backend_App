@@ -235,27 +235,41 @@ const userController = {
 
     recuperarsenha: async (req, res) => {
         try {
-            const {email} = req.params // pega id pela que é passado pela rota
-            const user = await UserModel.findOne({email}); // não exibe a senha
+          const email  = req.params.email;
+          console.log(email,"aaaaaaa")
+          const passwordGenerator = require('generate-password');
 
-            // tratando erro para caso não encontre o id
-            if (!user) {
-                res.status(404).json({ msg: "Email não encontrado" })
+            // Configuração das regras para a nova senha
+            const passwordOptions = {
+                length: 8,                                         // Mínimo de 8 caracteres
+                uppercase: true,                                  // Deve conter letras maiúsculas
+                lowercase: true,                                  // Deve conter letras minúsculas
+                numbers: true,                                    // Deve conter números
+                symbols: true,                                    // Deve conter caracteres especiais
+                excludeSimilarCharacters: true,                   // Excluir caracteres semelhantes como 'i' e 'l'
+                exclude: ' ',                                     // Excluir espaços em branco
+            };
 
-            }
-            else
-            {
+                // Gerar a nova senha
+            const newPassword = passwordGenerator.generate(passwordOptions);
 
-            enviarSenhaPorEmail(user.email, user.password);
-
-            res.status(200).send('E-mail enviado com sucesso');
-            }
+            console.log(newPassword);
           
+
+          const senhaHash = await bcrypt.hash(newPassword, 10); // Hash da nova senha
+    
+          // Atualizar a senha no banco de dados
+          await UserModel.findOneAndUpdate({ email }, { password: senhaHash });
+         
+          // Enviar a nova senha por e-mail
+          await enviarSenhaPorEmail(email, newPassword);
+    
+          res.status(200).send('E-mail enviado com sucesso');
         } catch (error) {
-            console.log(error);
-            res.status(500).send('Erro ao enviar e-mail');
-          }
-    },
+          console.log(error);
+          res.status(500).send('Erro ao enviar e-mail');
+        }
+      },
         
 }
 
